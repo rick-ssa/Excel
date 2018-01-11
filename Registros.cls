@@ -56,6 +56,8 @@ Private Function sortAndMerge(indiceColuna As Integer, tipoDados As clTipoDados,
     Dim rightHalf As New Collection 'the right half collection
     Dim leftHalf As New Collection 'the left half collection
     Dim v As Integer 'interate to the final merge
+    Dim val1
+    Dim val2
     
     meio = inicio + (fim - inicio) \ 2
     
@@ -95,8 +97,20 @@ Private Function sortAndMerge(indiceColuna As Integer, tipoDados As clTipoDados,
             Exit Do
         End If
         
+        'convert values for the appropriate type
+        val1 = r1.colunas.GetColuna(indiceColuna).valor
+        val2 = r2.colunas.GetColuna(indiceColuna).valor
+        Select Case tipoDados
+            Case 2, 3, 5, 6
+                val1 = VBA.CDbl(val1)
+                val2 = VBA.CDbl(val2)
+            Case 4
+                val1 = VBA.CDate(VBA.Format(val1, "mm/dd/yyyy"))
+                val2 = VBA.CDate(VBA.Format(val2, "mm/dd,yyyy"))
+        End Select
+        
         'compare the two columns of the two registers
-        If r1.colunas.GetColuna(indiceColuna).valor > r2.colunas.GetColuna(indiceColuna).valor Then
+        If val1 > val2 Then
             nColl.Add r2 'add the registers that has the lower value
             If iLeft = leftHalf.Count Then 'if it is the last register of that half
                 'add the rest of the other half registrs to the new collection
